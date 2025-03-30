@@ -2,8 +2,9 @@ import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 
-import { createUser } from '../utils/API';
 import Auth from '../utils/auth';
+import { useMutation } from '@apollo/client';
+import { ADD_USER } from '../utils/mutations';
 import type { User } from '../models/User';
 
 // biome-ignore lint/correctness/noEmptyPattern: <explanation>
@@ -14,6 +15,9 @@ const SignupForm = ({}: { handleModalClose: () => void }) => {
   const [validated] = useState(false);
   // set state for alert
   const [showAlert, setShowAlert] = useState(false);
+
+  // Apollo useMutation hook for ADD_USER
+  const [addUser] = useMutation(ADD_USER);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -31,13 +35,16 @@ const SignupForm = ({}: { handleModalClose: () => void }) => {
     }
 
     try {
-      const response = await createUser(userFormData);
+      // Execute the ADD_USER mutation
+      const { data } = await addUser({
+        variables: { ...userFormData },
+      });
 
-      if (!response.ok) {
-        throw new Error('something went wrong!');
+      if (!data) {
+        throw new Error('Something went wrong!');
       }
 
-      const { token } = await response.json();
+      const { token } = data.addUser;
       Auth.login(token);
     } catch (err) {
       console.error(err);
