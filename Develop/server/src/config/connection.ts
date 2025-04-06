@@ -3,7 +3,7 @@ dotenv.config();
 
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.MONGODB_URI || '';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/googlebooks';
 
 const db = async (): Promise<typeof mongoose.connection> => {
   try {
@@ -15,5 +15,6 @@ const db = async (): Promise<typeof mongoose.connection> => {
     throw new Error('Database connection failed.');
   }
 };
+
 
 export default db;
