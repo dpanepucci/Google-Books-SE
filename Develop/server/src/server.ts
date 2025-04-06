@@ -31,7 +31,7 @@ const startApolloServer = async () => {
   );
 
   if (process.env.NODE_ENV === 'production') {
-    const clientPath = path.resolve('../client/dist/index.html');
+    const clientPath = path.resolve('../../client/dist');
     app.use(express.static(clientPath));
 
     app.get('*', (_req: Request, res: Response) => {
